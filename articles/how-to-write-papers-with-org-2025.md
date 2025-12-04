@@ -3,7 +3,7 @@ title: "Emacsのorg-modeで論文を書こう2025"
 topics: [emacs, org, 論文]
 emoji: 🖨️
 type: tech
-published: false
+published: true
 ---
 
 冬、それは論文の季節。
