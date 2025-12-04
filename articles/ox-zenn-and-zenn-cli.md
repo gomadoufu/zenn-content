@@ -4,7 +4,6 @@ topics: [emacs, orgmode, zenn]
 emoji: 📝
 type: tech
 published: false
-published_at: 2050-0612 09:03
 ---
 
 

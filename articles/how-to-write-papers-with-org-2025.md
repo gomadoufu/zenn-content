@@ -4,7 +4,6 @@ topics: [emacs, org, 論文]
 emoji: 🖨️
 type: tech
 published: false
-published_at: 2050-06-12 09:03
 ---
 
 冬、それは論文の季節。

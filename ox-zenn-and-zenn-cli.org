@@ -2,7 +2,7 @@
 #+title: (メモ)ox-zennの使い方
 #+gfm_tags: emacs orgmode zenn
 #+gfm_custom_front_matter: :emoji 📝 :type tech
-#+gfm_custom_front_matter: :published false :published_at 2050-0612 09:03
+#+gfm_custom_front_matter: :published false
 
 #+options: broken-links:mark toc:nil 
 

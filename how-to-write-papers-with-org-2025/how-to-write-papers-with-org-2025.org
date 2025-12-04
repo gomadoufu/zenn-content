@@ -2,7 +2,7 @@
 #+title: Emacsのorg-modeで論文を書こう2025
 #+gfm_tags: emacs org 論文
 #+gfm_custom_front_matter: :emoji 🖨️ :type tech
-#+gfm_custom_front_matter: :published false :published_at 2050-06-12 09:03
+#+gfm_custom_front_matter: :published false
 
 #+options: broken-links:mark toc:nil 
 
