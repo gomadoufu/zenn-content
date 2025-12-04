@@ -1,0 +1,218 @@
+---
+title: "Emacsのorg-modeで論文を書こう2025"
+topics: [emacs, org, 論文]
+emoji: 🖨️
+type: tech
+published: false
+published_at: 2050-06-12 09:03
+---
+
+冬、それは論文の季節。
+
+ここでは、Emacsのorg-modeで論文執筆の環境を作ります。この最も使われているエディタ[^1]で、研究室のメンバーに差をつけましょう。
+
+
+## できるようになること
+
+-   本文・表・図の引用やリンクをorg-modeで記述できるようになる
+-   `latexmk` を用いて、ファイルを保存するたびにPDFを出力できるようになる
+-   引照する際に、対話的に文献を選択できるようになる
+
+****つまり自前のエディタで、プレーンテキストで書きながら、Overleafのワークフローが実現できます。****
+
+
+## org-mode で論文を書くメリット
+
+そもそもorg-modeとはEmacsモードの一つです。モードとは、VSCode的にいえば拡張機能のようなものです。org-modeには構造化ドキュメントを作成するための独自のマークアップ言語と、その言語で記述された文書をエクスポートする機能が含まれています[^2]。
+
+このorg-modeで論文を書く一番のメリットは、LaTeXのコマンドの仔細に惑わされる事なく、より執筆そのものに集中できるようになることです。
+
+例を示します。こんな感じのOrgテキストが、
+
+    #+LATEX_COMPILER: lualatex
+    #+LATEX_CLASS: ltjsarticle
+    #+LATEX_CLASS_OPTIONS: [twocolumn]
+    #+BIBLIOGRAPHY: sample.bib
+    #+CITE_EXPORT: natbib unsrtnat
+    #+TITLE: Emacsのorg-modeで論文を書こう2025
+    #+AUTHOR: gomadoufu, 唯野教授
+    #+DATE: \today
+    #+OPTIONS: toc:nil
+    
+    #+LATEX_HEADER_EXTRA: \usepackage{amsmath}
+    #+LATEX_HEADER_EXTRA: \usepackage{graphicx}
+    #+LATEX_HEADER_EXTRA: \usepackage{hyperref}
+    #+LATEX_HEADER_EXTRA: \usepackage{url}
+    #+LATEX_HEADER_EXTRA: \usepackage[numbers,sort,compress]{natbib}
+    
+    #+begin_abstract
+    本稿では、Emacsのorg-modeを用いた論文執筆環境の構築方法について述べる。
+    org-modeはプレーンテキストベースで構造化された文書を作成でき、LaTeXへのエクスポート機能により学術論文の執筆に適している。
+    我々は、org-citeを用いた文献管理、自動PDF生成、ltjsarticleクラスとの統合方法を示す。
+    提案手法により、Markdown的な記法で可読性の高いソースを保ちながら、高品質な論文PDFを生成できることを確認した。
+    #+end_abstract
+    
+    * はじめに
+    :PROPERTIES:
+    :CUSTOM_ID: sec:introduction
+    :END:
+    
+    学術論文の執筆において、LaTeX[cite:@latexproject]は標準的なツールとして広く利用されている。
+    しかし、LaTeXの記法は冗長であり、文書の構造が見えにくいという課題がある。
+    特に初学者にとっては、コマンドの羅列により本来の執筆作業に集中しづらい。
+    
+    一方、Markdown[cite:@markdown]に代表される軽量マークアップ言語は、シンプルな記法で構造化文書を記述できる。
+    Emacs[cite:@gnuemacs]のorg-mode[cite:@orgmode]は、Markdown以上の表現力を持ちながら、LaTeXへのエクスポート機能を備えている。
+    
+    本稿では、org-modeを用いた論文執筆環境の構築方法を提案する。
+    具体的には、以下の3点について述べる:
+    
+    1. org-citeによる文献管理の統合
+    2. ltjsarticleクラスとの連携設定
+    3. 自動PDF生成ワークフローの実装
+    
+    これにより、可読性の高いソースコードを維持しながら、学会投稿に適したPDFを生成できる。
+    
+    
+    * 評価
+    
+    ** 執筆効率の比較
+    
+    提案手法と従来のLaTeX直接編集における執筆効率を比較した。
+    被験者10名に、同一内容の2ページ程度の技術文書を作成してもらい、所要時間を計測した。
+    
+    表[[tab:efficiency]]に結果を示す。
+    org-modeを用いた場合、平均で23%の時間短縮が見られた。
+    
+    #+NAME: tab:efficiency
+    #+CAPTION: 執筆手法別の所要時間比較
+    #+ATTR_LATEX: :environment tabular :placement [tb]
+    | 手法          | 平均時間(分) | 標準偏差 |
+    |---------------+--------------+----------|
+    | LaTeX直接編集 |         45.3 |      8.2 |
+    | org-mode      |         34.8 |      6.5 |
+    
+    ** 可読性の評価
+    
+    ソースコードの可読性について、被験者による主観評価を実施した。
+    5段階評価(1:読みにくい、5:読みやすい)の結果、org-mode記法は平均4.2点、LaTeX記法は平均2.8点となった。
+    
+    * おわりに
+    :PROPERTIES:
+    :CUSTOM_ID: sec:conclusion
+    :END:
+    
+    本稿では、Emacsのorg-modeを用いた論文執筆環境について述べた。
+    org-citeによる文献管理、ltjsarticleクラスとの統合、自動PDF生成により、効率的な執筆環境を実現した。
+    
+    #+print_bibliography:
+
+自動でこのように変換され、
+
+```tex
+% Created 2025-12-04 Thu 17:54
+% Intended LaTeX compiler: lualatex
+\documentclass[twocolumn]{ltjsarticle}
+                 \usepackage{hyperref}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[numbers,sort,compress]{natbib}
+\author{gomadoufu, 唯野教授}
+\date{\today}
+\title{Emacsのorg-modeで論文を書こう2025}
+\hypersetup{
+ pdfauthor={gomadoufu, 唯野教授},
+ pdftitle={Emacsのorg-modeで論文を書こう2025},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 31.0.50 (Org mode 9.7.11)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\begin{abstract}
+本稿では、Emacsのorg-modeを用いた論文執筆環境の構築方法について述べる。
+org-modeはプレーンテキストベースで構造化された文書を作成でき、\LaTeX{}へのエクスポート機能により学術論文の執筆に適している。
+我々は、org-citeを用いた文献管理、自動PDF生成、ltjsarticleクラスとの統合方法を示す。
+提案手法により、Markdown的な記法で可読性の高いソースを保ちながら、高品質な論文PDFを生成できることを確認した。
+\end{abstract}
+\section{はじめに}
+\label{sec:orgcb72c24}
+学術論文の執筆において、\LaTeX{}\citep{latexproject}は標準的なツールとして広く利用されている。
+しかし、\LaTeX{}の記法は冗長であり、文書の構造が見えにくいという課題がある。
+特に初学者にとっては、コマンドの羅列により本来の執筆作業に集中しづらい。
+
+一方、Markdown\citep{markdown}に代表される軽量マークアップ言語は、シンプルな記法で構造化文書を記述できる。
+Emacs\citep{gnuemacs}のorg-mode\citep{orgmode}は、Markdown以上の表現力を持ちながら、\LaTeX{}へのエクスポート機能を備えている。
+
+本稿では、org-modeを用いた論文執筆環境の構築方法を提案する。
+具体的には、以下の3点について述べる:
+
+\begin{enumerate}
+\item org-citeによる文献管理の統合
+\item ltjsarticleクラスとの連携設定
+\item 自動PDF生成ワークフローの実装
+\end{enumerate}
+
+これにより、可読性の高いソースコードを維持しながら、学会投稿に適したPDFを生成できる。
+\section{評価}
+\label{sec:orgc87d971}
+
+\subsection{執筆効率の比較}
+\label{sec:orgf8a7b06}
+
+提案手法と従来の\LaTeX{}直接編集における執筆効率を比較した。
+被験者10名に、同一内容の2ページ程度の技術文書を作成してもらい、所要時間を計測した。
+
+表\ref{tab:org1906b3c}に結果を示す。
+org-modeを用いた場合、平均で23\%の時間短縮が見られた。
+
+\begin{table}[tb]
+\caption{\label{tab:org1906b3c}執筆手法別の所要時間比較}
+\centering
+\begin{tabular}{lrr}
+手法 & 平均時間(分) & 標準偏差\\
+\hline
+\LaTeX{}直接編集 & 45.3 & 8.2\\
+org-mode & 34.8 & 6.5\\
+\end{tabular}
+\end{table}
+\subsection{可読性の評価}
+\label{sec:orgc5907a3}
+
+ソースコードの可読性について、被験者による主観評価を実施した。
+5段階評価(1:読みにくい、5:読みやすい)の結果、org-mode記法は平均4.2点、\LaTeX{}記法は平均2.8点となった。
+\section{おわりに}
+\label{sec:org1ee9a91}
+本稿では、Emacsのorg-modeを用いた論文執筆環境について述べた。
+org-citeによる文献管理、ltjsarticleクラスとの統合、自動PDF生成により、効率的な執筆環境を実現した。
+
+\bibliographystyle{unsrtnat}
+\bibliography{sample}
+\end{document}
+
+```
+
+さらに自動でPDF上に組版されることで、以下のPDFが完成します[^3]。
+
+
+## インストールするもの
+
+-   Emacs
+-   Tex Live
+
+
+## init.elの設定
+
+
+## 参考
+
+-   
+
+
+[^1]: 著者調べ.(n=1)
+[^2]: <https://takaxp.github.io/org-ja.html#Top>
+[^3]: 正確には、この組版のステップはEmacsやorg-modeによるものではなく、Tex環境およびlatexmkによるものです。よってこのステップに限れば、Emacsでなくとも実現できます。

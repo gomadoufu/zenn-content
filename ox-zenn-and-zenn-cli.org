@@ -1,0 +1,222 @@
+
+#+title: (メモ)ox-zennの使い方
+#+gfm_tags: emacs orgmode zenn
+#+gfm_custom_front_matter: :emoji 📝 :type tech
+#+gfm_custom_front_matter: :published false :published_at 2050-0612 09:03
+
+#+options: broken-links:mark toc:nil 
+
+
+* 使い方
+
+** 基本的な記事の構造
+
+記事の冒頭に以下のようなメタデータを設定します:
+
+- =#+ZENN_SLUG:= 記事のスラッグ（URL）
+- =#+ZENN_TYPE:= =tech= または =idea=
+- =#+ZENN_TOPICS:= トピック（スペース区切り）
+- =#+ZENN_PUBLISHED:= =true= または =false=
+
+* 見出し
+org-modeでは =*= の数で見出しレベルを表現します。
+
+* 見出し1
+** 見出し2
+*** 見出し3
+**** 見出し4
+
+* リスト
+org-modeでは =-= または =+= でリストを作成します。
+
+** 番号なしリスト
+- Hello!
+- Hola!
+- Bonjour!
+  - ネストされたアイテム
+  - 別のネストアイテム
+
+** 番号付きリスト
+1. First
+2. Second
+3. Third
+
+* テキストリンク
+org-modeでは二重角括弧でリンクを表現します。
+
+[[https://zenn.dev][アンカーテキスト]]
+
+または
+
+[[https://zenn.dev]]
+
+* 画像
+org-modeでは =file:= プレフィックスで画像を指定します。
+
+[[file:https://example.com/image.png]]
+
+** 画像の横幅を指定する
+#+ATTR_HTML: :width 250px
+[[file:https://example.com/image.png]]
+
+** Altテキストを指定する
+org-exportでは自動的に画像ファイル名がaltになりますが、
+カスタム設定で制御可能です。
+
+** キャプションをつける
+#+CAPTION: キャプション
+[[file:https://example.com/image.png]]
+
+** 画像にリンクを貼る
+[[https://example.com][[file:https://example.com/image.png]]]
+
+* テーブル
+org-modeのテーブルは自動整形されます。
+
+| Head | Head | Head |
+|------+------+------|
+| Text | Text | Text |
+| Text | Text | Text |
+
+* コードブロック
+org-modeでは =#+begin_src= ブロックを使用します。
+
+** 基本的なコードブロック
+#+begin_src js
+const great = () => {
+  console.log("Awesome");
+};
+#+end_src
+
+** ファイル名を表示する（tangleオプションを使用）
+#+begin_src js :tangle filename.js
+const great = () => {
+  console.log("Awesome");
+};
+#+end_src
+
+** diff表示
+#+begin_src diff
+@@ -4,6 +4,5 @@
++ const foo = bar.baz([1, 2, 3]) + 1;
+- let foo = bar.baz([1, 2, 3]);
+#+end_src
+
+言語とdiffを組み合わせる場合はカスタムエクスポート設定が必要です。
+
+* 数式
+org-modeはLaTeX数式をネイティブサポートしています。
+
+** 数式のブロック
+\begin{equation}
+e^{i\theta} = \cos\theta + i\sin\theta
+\end{equation}
+
+または
+
+\[
+e^{i\theta} = \cos\theta + i\sin\theta
+\]
+
+** インラインで数式を挿入する
+インライン数式は $a\ne0$ のように記述します。
+
+* 引用
+org-modeでは =#+begin_quote= ブロックを使用します。
+
+#+begin_quote
+引用文
+引用文
+#+end_quote
+
+* 脚注
+org-modeの脚注記法です。
+
+脚注の例[fn:1]です。インライン[fn::脚注の内容その2]で書くこともできます。
+
+[fn:1] 脚注の内容その1
+
+* 区切り線
+org-modeでは5つ以上のダッシュで区切り線になります。
+
+-----
+
+* インラインスタイル
+org-modeのインライン記法です。
+
+/イタリック/
+*太字*
++打ち消し線+
+~code~ または =code=
+
+** 実際の表示例
+- /イタリック/
+- *太字*
+- +打ち消し線+
+- インラインで ~code~ を挿入する
+
+* インラインのコメント
+org-modeでは =#= で始まる行がコメントになります。
+
+# TODO: ◯◯について追記する
+
+このコメントはエクスポート時に非表示になります。
+
+* Mermaid図
+org-modeでもmermaidコードブロックが使用できます。
+（HTMLエクスポート時に適切なJavaScriptライブラリが必要）
+
+#+begin_src mermaid :eval no
+graph TB
+A[Hard edge] -->|Link text| B(Round edge)
+B --> C{Decision}
+C -->|One| D[Result one]
+C -->|Two| E[Result two]
+#+end_src
+
+* 補足: org-modeで直接置き換えが難しい記法
+以下の記法はorg-modeの標準機能では直接置き換えできず、
+カスタムエクスポート設定やマクロが必要です：
+
+- メッセージブロック (:::message)
+- アコーディオン (:::details)
+- リンクカード (@[card])
+- 各種埋め込み（Twitter, YouTube, GitHub等）
+- コードブロックのファイル名とdiffの同時表示
+
+----
+
+
+#+attr_html: :x-type message
+#+begin_quote
+メッセージをここに
+#+end_quote
+
+
+#+attr_html: :x-type alert
+#+begin_quote
+メッセージをここに
+#+end_quote
+
+
+#+attr_html: :x-type details :x-summary タイトル
+#+begin_quote
+表示したい内容
+#+end_quote
+
+[[tweet://https://x.com/terminaldotshop/status/1995932448925114797?s=20]]
+[[youtube://jNa3axo40qM]]
+[[codepen://https://codepen.io/alphardex/pen/poyOMgr]]
+[[slideshare://866aBtwVYswXvu]]
+[[speakerdeck://3491c9ab20ef40938119aecadb06f1c6]]
+[[jsfiddle://https://jsfiddle.net/chrisvfritz/50wL7mdz]]
+
+
+画像
+[[https://raw.githubusercontent.com/conao3/files/master/blob/headers/png/ox-zenn.el.png]]
+
+#+attr_html: :alt image
+[[https://raw.githubusercontent.com/conao3/files/master/blob/headers/png/ox-zenn.el.png]]
+
+#+attr_html: :alt image :width 250px
+[[https://raw.githubusercontent.com/conao3/files/master/blob/headers/png/ox-zenn.el.png]]
