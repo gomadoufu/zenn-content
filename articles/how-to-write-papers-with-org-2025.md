@@ -492,7 +492,7 @@ bibファイル名および使用する文献管理ツールは、適宜調整�
 
     #+CITE_EXPORT: natbib ipsjunsrt
 
-さて、ここまで設定したら、 `bib` ファイルを用意した上で、文献を参照したい箇所で `C-c b` と打ちます。すると、ミニバッファで文献を対話的に選択して、 `[cite:@key]` を文中に挿入することができるようになります。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/3.gif?raw=true) 余談ですが、文献を選択するときにTAB、挿入するときにTABで、TABキーを2回押します。私はここでEnterを押し続け、参照を挿入することができなくて悩みました。
+さて、ここまで設定したら、 `bib` ファイルを用意した上で、文献を参照したい箇所で `C-c b` と打ちます。すると、ミニバッファで文献を対話的に選択して、 `[cite:@key]` を文中に挿入することができるようになります。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/3.gif?raw=true) 文献を選択するときにTAB、挿入するときにTABで、TABキーを2回押します。私はここでEnterを押し続け、参照を挿入することができなくて悩みました。
 
 最後に、論文の末尾で
 
