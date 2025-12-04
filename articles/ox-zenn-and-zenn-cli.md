@@ -62,9 +62,7 @@ org-modeでは `-` または `+` でリストを作成します。
 
 org-modeでは二重角括弧でリンクを表現します。
 
-[アンカーテキスト](https://zenn.dev)
-
-または
+[アンカーテキスト](https://zenn.dev)または
 
 <https://zenn.dev>
 

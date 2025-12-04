@@ -16,11 +16,11 @@
 * できるようになること
 - テキストからLaTeXへの変換: 論文における本文・表・図や引用を、Markdownに近い書き方で記述できるようになる
 - PDFプレビュー: ~latexmk~ を用いて、ファイルを保存するたびにPDFを出力できるようになる
-- 引用文献の管理: 本文中で文献を引照する際に、文献を対話的に選択できるようになる
+- 文献の参照: 本文中で文献を参照すると、参考文献として記載される。また、文献を対話的に選択できるようになる
 
 ざっくりいうと、 **自前のエディタで、プレーンテキストで論文を書きつつ、Overleafに近いワークフローが実現できます。**
 
-* org-mode で論文を書くメリット
+* org-modeで論文を書くメリット
 org-modeとはEmacsモードの一つで、アウトライナー機能やタスク管理機能の集合体です。モードというのはVSCodeでいう拡張機能のようなもので、Emacsの設定ファイルに設定を記述することで利用します。org-modeには構造化ドキュメントを作成するための独自のマークアップ言語と、その言語で記述された文書をエクスポートする機能が含まれており、今回はこれを利用します[fn:2]。
 [fn:2] https://takaxp.github.io/org-ja.html#Top
 
@@ -110,98 +110,10 @@ org-citeによる文献管理、ltjsarticleクラスとの統合、自動PDF生�
 
 #+end_example
 
-自動で以下の ~tex~ ファイルに変換され、
-#+begin_src tex
-% Created 2025-12-04 Thu 17:54
-% Intended LaTeX compiler: lualatex
-\documentclass[twocolumn]{ltjsarticle}
-                 \usepackage{hyperref}
-
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{url}
-\usepackage[numbers,sort,compress]{natbib}
-\author{gomadoufu, 唯野教授}
-\date{\today}
-\title{Emacsのorg-modeで論文を書こう2025}
-\hypersetup{
- pdfauthor={gomadoufu, 唯野教授},
- pdftitle={Emacsのorg-modeで論文を書こう2025},
- pdfkeywords={},
- pdfsubject={},
- pdfcreator={Emacs 31.0.50 (Org mode 9.7.11)}, 
- pdflang={English}}
-\begin{document}
-
-\maketitle
-\begin{abstract}
-本稿では、Emacsのorg-modeを用いた論文執筆環境の構築方法について述べる。
-org-modeはプレーンテキストベースで構造化された文書を作成でき、\LaTeX{}へのエクスポート機能により学術論文の執筆に適している。
-我々は、org-citeを用いた文献管理、自動PDF生成、ltjsarticleクラスとの統合方法を示す。
-提案手法により、Markdown的な記法で可読性の高いソースを保ちながら、高品質な論文PDFを生成できることを確認した。
-\end{abstract}
-\section{はじめに}
-\label{sec:orgcb72c24}
-学術論文の執筆において、\LaTeX{}\citep{latexproject}は標準的なツールとして広く利用されている。
-しかし、\LaTeX{}の記法は冗長であり、文書の構造が見えにくいという課題がある。
-特に初学者にとっては、コマンドの羅列により本来の執筆作業に集中しづらい。
-
-一方、Markdown\citep{markdown}に代表される軽量マークアップ言語は、シンプルな記法で構造化文書を記述できる。
-Emacs\citep{gnuemacs}のorg-mode\citep{orgmode}は、Markdown以上の表現力を持ちながら、\LaTeX{}へのエクスポート機能を備えている。
-
-本稿では、org-modeを用いた論文執筆環境の構築方法を提案する。
-具体的には、以下の3点について述べる:
-
-\begin{enumerate}
-\item org-citeによる文献管理の統合
-\item ltjsarticleクラスとの連携設定
-\item 自動PDF生成ワークフローの実装
-\end{enumerate}
-
-これにより、可読性の高いソースコードを維持しながら、学会投稿に適したPDFを生成できる。
-\section{評価}
-\label{sec:orgc87d971}
-
-\subsection{執筆効率の比較}
-\label{sec:orgf8a7b06}
-
-提案手法と従来の\LaTeX{}直接編集における執筆効率を比較した。
-被験者10名に、同一内容の2ページ程度の技術文書を作成してもらい、所要時間を計測した。
-
-表\ref{tab:org1906b3c}に結果を示す。
-org-modeを用いた場合、平均で23\%の時間短縮が見られた。
-
-\begin{table}[tb]
-\caption{\label{tab:org1906b3c}執筆手法別の所要時間比較}
-\centering
-\begin{tabular}{lrr}
-手法 & 平均時間(分) & 標準偏差\\
-\hline
-\LaTeX{}直接編集 & 45.3 & 8.2\\
-org-mode & 34.8 & 6.5\\
-\end{tabular}
-\end{table}
-\subsection{可読性の評価}
-\label{sec:orgc5907a3}
-
-ソースコードの可読性について、被験者による主観評価を実施した。
-5段階評価(1:読みにくい、5:読みやすい)の結果、org-mode記法は平均4.2点、\LaTeX{}記法は平均2.8点となった。
-\section{おわりに}
-\label{sec:org1ee9a91}
-本稿では、Emacsのorg-modeを用いた論文執筆環境について述べた。
-org-citeによる文献管理、ltjsarticleクラスとの統合、自動PDF生成により、効率的な執筆環境を実現した。
-
-\bibliographystyle{unsrtnat}
-\bibliography{sample}
-\end{document}
-
-#+end_src
-
-さらに自動で組版されることで、以下のPDFが完成します[fn:3]。
+以下のPDFが完成します[fn:3]。
 [[https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/1.png?raw=true]]
 
-[fn:3]正確には、この組版のステップはEmacsやorg-modeによるものではなく、Tex環境およびlatexmkによるものです。よってこのステップに限れば、Emacsでなくとも実現できます。
+[fn:3]orgファイルからtexファイルへの変換はorg-modeによるものですが、組版のステップはTex環境およびlatexmkによるものです。よってこのステップに限れば、Emacsでなくとも実現できます。
 
 
 * 必要なもの
@@ -248,7 +160,34 @@ Emacsの設定ファイル ~init.el~ に以下を書きます。
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 #+end_src
 
-~org-latex-pdf-process~ はデフォルトでは ~pdflatex~ を利用することになっていて、ここを書き換えることでエクスポート時に任意のコマンドを実行できます。特定のコンパイラしか使用しない場合は、直接 ~lualatex~ や ~platex~ のコマンドを設定するといいです。今回はここを ~latexmk~ に全部投げることで、環境設定の柔軟性をあげることを意図しています。
+~org-latex-pdf-process~ はデフォルトでは ~pdflatex~ を利用することになっていて、ここを書き換えることでエクスポート時に任意のコマンドを実行できます。今回はここで ~latexmk~ を呼び出すことで、LaTeX特有の環境設定を記述することを回避しています。一般的な場合と同様に、以下のような ~latexmkrc~ を ~org~ ファイルと同じディレクトリに置いてください。
+
+#+begin_src perl
+#!/usr/bin/env perl
+
+# $latex = 'platex -synctex=1 -halt-on-error -interaction=nonstopmode';
+# $bibtex = 'pbibtex';  # platex用はpbibtex
+# $dvipdf = 'dvipdfmx %O -o %D %S';
+# $makeindex = 'mendex %O -o %D %S';
+# $pdf_mode = 3;  # 3 = latex → dvi → pdf
+
+# # uplatex + dvipdfmx
+# $latex = 'uplatex -synctex=1 -halt-on-error -interaction=nonstopmode';
+# $bibtex = 'upbibtex';
+# $dvipdf = 'dvipdfmx %O -o %D %S';
+# $makeindex = 'mendex %O -o %D %S';
+# $pdf_mode = 3;
+
+# lualatex
+$lualatex = 'lualatex -synctex=1 -halt-on-error -interaction=nonstopmode';
+$bibtex = 'upbibtex';  # または 'bibtex'
+$makeindex = 'mendex %O -o %D %S';  # または 'makeindex'
+$pdf_mode = 4;  # 4 = lualatex
+
+# 外部PDFビューアを使わない（今回はEmacsで開くため、外部ビューワなどお好みで）
+$pdf_previewer = 'none';
+$preview_mode = 0;
+#+end_src
 
 また、上記のように ~org-latex-classes~ に文書クラスの定義を追加することで、デフォルトではサポートされていない日本語文書クラスに対応させています。もし投稿学会からテンプレートが配布されている場合は、クラスファイルを参照してクラス定義を作成し、このリストに追加することで、変換に使用できるようになります。
 
@@ -388,15 +327,196 @@ Emacsの設定ファイル ~init.el~ に以下を書きます。
 #+end_src
 
 上記の設定で、バックグラウンドで ~latexmk~ プロセスを走らせて、リアルタイムプレビューすることができます。 ~async~ パッケージを利用して非同期に処理を進めることで、コンパイル中もバッファの編集が可能です。なお、コンパイル中に保存した場合はコンパイル処理が2つになるわけではなく、後から来た処理がアーリーリターンします。また、もしコンパイル中に問題が起きて処理がハングしてしまった場合、キャンセル関数を呼び出すことで処理を中止できます。
-
-必須ではないですが、バックグラウンドの処理で静かだと不安になるので、コンパイル進行中であることをモードラインに表示しています(~spinner~)。
 [[https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/2.png?raw=true]]
 
 
-ここまでの設定で、 ~org~ ファイルで論文を執筆し、原稿をプレビューすることができるようになりました。
+* Orgファイルの書き方
+ ~org~ ファイルで論文を執筆し、原稿をプレビューすることができるようになりました。ここでOrgファイルでの論文の書き方を説明します。なお、必要最低限かつざっくり説明なので、他にも色々機能はあるはずです
+
+** コンパイラ・文書クラス
+#+begin_example
+#+LATEX_COMPILER: lualatex
+#+LATEX_CLASS: ltjsarticle
+#+LATEX_CLASS_OPTIONS: [twocolumn]
+#+end_example
+コンパイラ、文書クラスなど、最低限の設定には専用のディレクティブがあります。これについては、TeXの変換結果をみてもらった方が理解が早いですね
+#+begin_src tex
+% Created 2025-12-04 Thu 22:07
+% Intended LaTeX compiler: lualatex
+\documentclass[twocolumn]{ltjsarticle}
+#+end_src
+たとえば学会のテンプレートを使っていて、論文誌と研究報告を切り替えるトグルがある場合は、この角かっこの中に記述すればいいわけです。
+
+** パッケージ
+~\usepackage~ 相当の記述をしたいときは、以下のように書きます
+#+begin_example org
+#+LATEX_HEADER_EXTRA: \usepackage{amsmath}
+#+LATEX_HEADER_EXTRA: \usepackage{graphicx}
+#+LATEX_HEADER_EXTRA: \usepackage{hyperref}
+#+LATEX_HEADER_EXTRA: \usepackage{url}
+#+end_example
+ちょっと不恰好ですね、、その代わりLaTeXが見たまんま出るので、 ~\newcommand~ などもこちらで。
 
 
+** タイトル・著者情報など
+専用のディレクティブがいくつかあります[fn:4]。
+[fn:4]https://orgmode.org/manual/Export-Settings.html
 
+
+#+begin_example org
+#+TITLE: Emacsのorg-modeで論文を書こう2025
+#+AUTHOR: gomadoufu, 唯野教授
+#+DATE: \today
+#+OPTIONS: toc:nil
+#+end_example
+学会に出す場合は、タイトルや著者情報には専用のコマンドが用意されていることも多いです。そのような時は上記 ~OPTIONS~ でそれらを ~nil~ にした上で、org-mode内の ~latex~ ソースブロックで部分的にLaTeXを書いて対応します。
+
+
+例えば情報処理学会の公式テンプレートを使用する場合、 ~\usepackage~ を除いたファイル冒頭はこのようになります。 ~#+begin_export latex~ と ~#+end_export~ で囲まれた箇所が、LaTeXでそのまま出力される[fn:5]ので、必ず所定の形式で出力されます。
+[fn:5]orgファイルの中にLaTeXがそのまま書けることは大きなメリットです。普段は簡便な記法を使いつつも、不測の事態に遭遇したらLaTeXにフォールバックして、インターネットにある解決策を適用できます。
+
+
+#+begin_example org
+#+LATEX_COMPILER: platex
+#+LATEX_CLASS: ipsj
+#+LATEX_CLASS_OPTIONS: [submit,techrep,noauthor]
+#+OPTIONS: toc:nil author:nil date:nil
+
+#+LATEX_HEADER_EXTRA: \usepackage{otf}
+#+LATEX_HEADER_EXTRA: \usepackage{amsmath}
+#+LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{graphicx}
+#+LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{hyperref}
+...(略)
+
+#+begin_export latex
+\title{Emacsのorg-modeで論文を書こう2025}
+
+\affiliate{University X}{university.example}
+\author{gomadoufu}{gomadoufu}{University X}[user@university.example]
+\author{唯野教授}{tadano kyozyu}{University X}[professor@university.example]
+#+end_export
+
+#+begin_export latex
+\begin{abstract}
+本稿では、Emacsのorg-modeを用いた論文執筆環境の構築方法について述べる。
+org-modeはプレーンテキストベースで構造化された文書を作成でき、LaTeXへのエクスポート機能により学術論文の執筆に適している。
+我々は、org-citeを用いた文献管理、自動PDF生成、IPSJテンプレートとの統合方法を示す。
+提案手法により、Markdown的な記法で可読性の高いソースを保ちながら、高品質な論文PDFを生成できることを確認した。
+\end{abstract}
+#+end_export
+
+#+begin_export latex
+\begin{jkeyword}
+Emacs, org-mode, LaTeX, 論文執筆
+\end{jkeyword}
+#+end_export
+#+end_example
+
+ここまでで ~org~ ファイルを、クラスファイルに沿った形でPDFにすることができるようになりました。
+
+
+* 参照・参考文献のコントロール
+最後に、図表を本文中で参照したり、論文に参考文献を記載できるようにします。
+
+** 図表の参照
+図表の参照にはRefTeX[fn:6]を利用します。文中でorg-modeのリンク記法を使って、図表との相互参照を作ることができます。
+[fn:6]https://www.gnu.org/software/auctex/reftex.html
+
+
+~init.el~ に、以下のように設定します
+#+begin_src emacs-lisp
+(use-package reftex
+  :ensure nil
+  :hook
+  (org-mode . reftex-mode)
+  (LaTeX-mode . reftex-mode)
+  
+  :custom
+  ;; RefTeXとorg-modeの統合
+  (reftex-plug-into-AUCTeX t)
+  (reftex-default-bibliography '("~/Documents/references.bib"))
+  
+  ;; ラベルの接頭辞設定
+  (reftex-label-alist
+   '(("\\section" ?s "sec:" "~\\ref{%s}" t ("section" "Section"))
+     ("\\subsection" ?u "subsec:" "~\\ref{%s}" t ("subsection" "Subsection"))
+     ("\\subsubsection" ?b "subsubsec:" "~\\ref{%s}" t ("subsubsection"))
+     ("\\equation" ?e "eq:" "~\\eqref{%s}" t ("equation" "Equation"))
+     ("\\figure" ?f "fig:" "~\\ref{%s}" t ("figure" "Figure"))
+     ("\\table" ?t "tab:" "~\\ref{%s}" t ("table" "Table"))))
+  
+  ;; 目次の設定
+  (reftex-toc-split-windows-horizontally t)
+  (reftex-toc-split-windows-fraction 0.3))
+#+end_src
+
+本文中で、このように利用します
+#+begin_example org
+この提案手法全体の概要図を図[[fig:sys-overview]]に示す.
+
+#+NAME: fig:sys-overview
+#+CAPTION: 提案手法の概要図
+#+ATTR_LATEX: :scale 0.15 :options bb=0 0 2000 1000 :placement [tb]
+[[file:image/system.drawio.png]]
+
+表[[tab:efficiency]]に結果を示す。
+org-modeを用いた場合、平均で23%の時間短縮が見られた。
+
+#+NAME: tab:efficiency
+#+CAPTION: 執筆手法別の所要時間比較
+#+ATTR_LATEX: :environment tabular :placement [tb]
+| 手法 | 平均時間（分） | 標準偏差 |
+|------+----------------+----------|
+| LaTeX直接編集 | 45.3 | 8.2 |
+| org-mode | 34.8 | 6.5 |
+#+end_example
+
+** 参考文献の参照
+org-modeにはデフォルトでorg-cite[fn:7]という機能があり、文中に ~[cite:@key]~ と書くことでLaTeXでいうところの ~\cite~ 形式の参照が利用できるほか、 ~bib~ ファイルからの文献の検索と挿入が可能になります。これにフロントエンドとしてcitar[fn:8]パッケージを組み合わせることで、リアルタイムな絞り込み検索ができます。快適。
+[fn:7] abc
+[fn:8] abc
+
+
+#+begin_src emacs-lisp
+;;; org-cite設定
+(use-package oc
+  :ensure nil)
+
+;;; citar設定（org-citeのUI強化）
+(use-package citar
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  :bind
+  (:map org-mode-map
+        ("C-c b" . citar-insert-citation)))
+#+end_src
+
+上記の設定をしたら、~org~ ファイルの冒頭に以下の内容を加えます
+#+begin_example org
+#+BIBLIOGRAPHY: sample.bib
+#+CITE_EXPORT: natbib unsrtnat
+#+end_example
+bibファイル名および使用する文献管理ツールは、適宜調整してください。特記すべきは ~CITE_EXPORT~ で、ここにbstファイルを指定することができます。情報処理学会なら、このように
+#+begin_example org
+#+CITE_EXPORT: natbib ipsjunsrt
+#+end_example
+
+さて、ここまで設定したら、 ~bib~ ファイルを用意した上で、文献を参照したい箇所で ~C-c b~ と打ちます。すると、ミニバッファで文献を対話的に選択して、 ~[cite:@key]~ を文中に挿入することができるようになります。
+[[https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/3.gif?raw=true]]
+
+
+最後に、論文の末尾で
+#+begin_example org
+#+print_bibliography:
+#+end_example
+と書くと、参考文献リストが自動で出力されます。
+
+参照や参考文献も ~org~ ファイル全体は[[#org-modeで論文を書くメリット][記事冒頭]]をご覧ください。
+
+* おわりに
+なんか記事がめちゃくちゃ長くなっちゃいました！！！！！ Emacsで良い論文執筆ライフを！[fn:9]
+[fn:9] 論文執筆には、Emacsの他に、健康が必要です。寒いので体調にお気をつけて〜
 
 * 参考
-- 
