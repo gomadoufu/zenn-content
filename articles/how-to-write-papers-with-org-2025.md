@@ -10,6 +10,8 @@ published: true
 
 Emacsのorg-modeを使って、快適な論文執筆環境を作ります。
 
+この記事は、[実空間コンピューティング研究室アドベントカレンダー](https://adventar.org/calendars/11321)4日目の記事です。
+
 
 ## できるようになること
 
