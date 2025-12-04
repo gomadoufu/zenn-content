@@ -13,16 +13,16 @@ published: false
 
 ## できるようになること
 
--   テキストからLaTeXへの変換: 論文における本文・表・図や引用を、Markdownに近い書き方で記述できるようになる
--   PDFプレビュー: `latexmk` を用いて、ファイルを保存するたびにPDFを出力できるようになる
--   文献の参照: 本文中で文献を参照すると、参考文献として記載される。また、文献を対話的に選択できるようになる
+1.  テキストからLaTeXへの変換: 論文における本文・表・図や引用を、Markdownに近い書き方で記述できるようになる
+2.  PDFプレビュー: `latexmk` を用いて、ファイルを保存するたびにPDFを出力できるようになる
+3.  文献の参照: 本文中で文献を参照すると、参考文献として記載される。また、文献を対話的に選択できるようになる
 
 ざっくりいうと、 ****自前のエディタで、プレーンテキストで論文を書きつつ、Overleafに近いワークフローが実現できます。****
 
 
 ## org-modeで論文を書くメリット
 
-org-modeとはEmacsモードの一つで、アウトライナー機能やタスク管理機能の集合体です。モードというのはVSCodeでいう拡張機能のようなもので、Emacsの設定ファイルに設定を記述することで利用します。org-modeには構造化ドキュメントを作成するための独自のマークアップ言語と、その言語で記述された文書をエクスポートする機能が含まれており、今回はこれを利用します[^2]。
+org-modeとはEmacsモードの一つで、アウトライナー機能やタスク管理機能の集合体です。モードというのはVSCodeでいう拡張機能のようなもので、ファイルに設定を記述することで利用します。org-modeには構造化ドキュメントを作成するための独自のマークアップ言語と、その言語で記述された文書をエクスポートする機能が含まれており、今回はこれを利用します[^2]。
 
 org-modeで論文を書く一番のメリットは、本文に集中できるようになることです。LaTeXマクロの仔細に惑わされる事なく、執筆そのものに重点を置くことができます。
 
@@ -106,7 +106,7 @@ org-modeで論文を書く一番のメリットは、本文に集中できるよ
     
     #+print_bibliography:
 
-以下のPDFが完成します[^3]。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/1.png?raw=true)
+以下のPDFが出力されます[^3]。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/1.png?raw=true)
 
 
 ## 必要なもの
@@ -157,6 +157,10 @@ Emacsの設定ファイル `init.el` に以下を書きます。
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 ```
 
+`org-latex-classes` に文書クラスの定義を追加することで、日本語文書クラスに対応させています。もし投稿学会からテンプレートが配布されている場合は、クラスファイルを参考に独自のクラス定義を作成し、このリストに追加することで、変換に使用できるようになります。
+
+クラス定義中に `[NO-DEFAULT-PACKAGES]` を指定すると、org-modeが自動的に挿入するデフォルトパッケージが読み込まれなくなります。これは、文書クラスや学会テンプレートが独自のパッケージ構成を持っている場合に、競合を避けるために必要になります。特に日本語文書クラスでは `platex` や `uplatex` が使われていることが多いため、デフォルトパッケージとの噛み合わせが悪いです。したがって、これを設定しておいた方が無難です。後述しますが、パッケージの追加は `org` ファイル中で指定できます。
+
 `org-latex-pdf-process` はデフォルトでは `pdflatex` を利用することになっていて、ここを書き換えることでエクスポート時に任意のコマンドを実行できます。今回はここで `latexmk` を呼び出すことで、LaTeX特有の環境設定を記述することを回避しています。一般的な場合と同様に、以下のような `latexmkrc` を `org` ファイルと同じディレクトリに置いてください。
 
 ```perl
@@ -186,14 +190,10 @@ $pdf_previewer = 'none';
 $preview_mode = 0;
 ```
 
-また、上記のように `org-latex-classes` に文書クラスの定義を追加することで、デフォルトではサポートされていない日本語文書クラスに対応させています。もし投稿学会からテンプレートが配布されている場合は、クラスファイルを参照してクラス定義を作成し、このリストに追加することで、変換に使用できるようになります。
-
-クラス定義中に `[NO-DEFAULT-PACKAGES]` を指定すると、org-modeが自動的に挿入するデフォルトパッケージが読み込まれなくなります。これは、文書クラスや学会テンプレートが独自のパッケージ構成を持っている場合に、競合を避けるために必要になります。特に日本語文書クラスでは `platex` や `uplatex` が使われていることが多いため、デフォルトパッケージとの噛み合わせが悪いので、設定しておいた方が無難です。後述しますが、パッケージの追加は `org` ファイル中で指定できます。
-
 
 ## PDFをプレビューする
 
-論文を変更したら、PDFをプレビューして確認したいものです。
+設定が長めですが、org-modeのconfigとして以下を設定します。
 
 ```emacs-lisp
 (use-package spinner)
@@ -325,7 +325,9 @@ $preview_mode = 0;
          (message "❌ エラー: %s" (error-message-string err)))))))
 ```
 
-上記の設定で、バックグラウンドで `latexmk` プロセスを走らせて、リアルタイムプレビューすることができます。 `async` パッケージを利用して非同期に処理を進めることで、コンパイル中もバッファの編集が可能です。なお、コンパイル中に保存した場合はコンパイル処理が2つになるわけではなく、後から来た処理がアーリーリターンします。また、もしコンパイル中に問題が起きて処理がハングしてしまった場合、キャンセル関数を呼び出すことで処理を中止できます。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/2.png?raw=true)
+このように設定すると、バックグラウンドで `latexmk` プロセスを走らせて、リアルタイムプレビューを実行することができます。 `async` パッケージを利用して非同期に処理を進めることで、コンパイル中もバッファの編集が可能です。なお、コンパイル中に保存した場合はコンパイル処理が2つになるわけではなく、後から来た処理がアーリーリターンします。また、もしコンパイル中に問題が起きて処理がハングしてしまった場合、キャンセル関数を呼び出すことで処理を中止できます。
+
+`spinner` を使って、コンパイル中にお月さまをクルクルさせています。動いてるんだなーってわかって安心できます ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/4.gif?raw=true)
 
 
 ## Orgファイルの書き方
@@ -371,45 +373,33 @@ $preview_mode = 0;
     #+DATE: \today
     #+OPTIONS: toc:nil
 
-学会に出す場合は、タイトルや著者情報には専用のコマンドが用意されていることも多いです。そのような時は上記 `OPTIONS` でそれらを `nil` にした上で、org-mode内の `latex` ソースブロックで部分的にLaTeXを書いて対応します。
+学会に出す場合は、タイトルや著者情報には専用のコマンドが用意されていることも多いです。そのような時は上記 `OPTIONS` でタイトル・著者情報を `nil` にした上で、org-mode内の `latex` ソースブロックで直接LaTeXを書いて対応します。
 
-例えば情報処理学会の公式テンプレートを使用する場合、 `\usepackage` を除いたファイル冒頭はこのようになります。 `#+begin_export latex` と `#+end_export` で囲まれた箇所が、LaTeXでそのまま出力される[^5]ので、必ず所定の形式で出力されます。
+例えば情報処理学会の公式テンプレートを使用する場合、 `\usepackage` を除いたファイル冒頭は以下の通りです。 `#+begin_export latex` と `#+end_export` で囲まれた箇所が、LaTeXでそのまま出力される[^5]ので、タイトルや著者情報が必ず所定の形式で出力されるようになります。
 
-    #+LATEX_COMPILER: platex
-    #+LATEX_CLASS: ipsj
-    #+LATEX_CLASS_OPTIONS: [submit,techrep,noauthor]
-    #+OPTIONS: toc:nil author:nil date:nil
     
-    #+LATEX_HEADER_EXTRA: \usepackage{otf}
-    #+LATEX_HEADER_EXTRA: \usepackage{amsmath}
-    #+LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{graphicx}
-    #+LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{hyperref}
+    LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{graphicx}
     ...(略)
     
     #+begin_export latex
+    
+    
     \title{Emacsのorg-modeで論文を書こう2025}
     
-    \affiliate{University X}{university.example}
     \author{gomadoufu}{gomadoufu}{University X}[user@university.example]
-    \author{唯野教授}{tadano kyozyu}{University X}[professor@university.example]
-    #+end_export
     
-    #+begin_export latex
     \begin{abstract}
-    本稿では、Emacsのorg-modeを用いた論文執筆環境の構築方法について述べる。
-    org-modeはプレーンテキストベースで構造化された文書を作成でき、LaTeXへのエクスポート機能により学術論文の執筆に適している。
-    我々は、org-citeを用いた文献管理、自動PDF生成、IPSJテンプレートとの統合方法を示す。
-    提案手法により、Markdown的な記法で可読性の高いソースを保ちながら、高品質な論文PDFを生成できることを確認した。
+    ここがアブストラクト
     \end{abstract}
-    #+end_export
     
-    #+begin_export latex
     \begin{jkeyword}
     Emacs, org-mode, LaTeX, 論文執筆
     \end{jkeyword}
+    
+    
     #+end_export
 
-ここまでで `org` ファイルを、クラスファイルに沿った形でPDFにすることができるようになりました。
+ここまでで `org` ファイルを、クラスファイルに沿った形で、PDFに出力することができるようになりました。
 
 
 ## 参照・参考文献のコントロール
@@ -490,32 +480,48 @@ org-modeにはデフォルトでorg-cite[^7]という機能があり、文中に
         ("C-c b" . citar-insert-citation)))
 ```
 
-上記の設定をしたら、~org~ ファイルの冒頭に以下の内容を加えます
+上記の設定をしたら、 `org` ファイルの冒頭に以下の内容を加えます
 
     #+BIBLIOGRAPHY: sample.bib
     #+CITE_EXPORT: natbib unsrtnat
 
-bibファイル名および使用する文献管理ツールは、適宜調整してください。特記すべきは `CITE_EXPORT` で、ここにbstファイルを指定することができます。情報処理学会なら、このように
+bibファイル名および使用する文献管理ツールは、適宜調整してください。特記すべきは `CITE_EXPORT` で、ここにbstファイルを指定することができます。情報処理学会(`ipsjunsrt.bst`)なら、このように
 
     #+CITE_EXPORT: natbib ipsjunsrt
 
-さて、ここまで設定したら、 `bib` ファイルを用意した上で、文献を参照したい箇所で `C-c b` と打ちます。すると、ミニバッファで文献を対話的に選択して、 `[cite:@key]` を文中に挿入することができるようになります。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/3.gif?raw=true)
+さて、ここまで設定したら、 `bib` ファイルを用意した上で、文献を参照したい箇所で `C-c b` と打ちます。すると、ミニバッファで文献を対話的に選択して、 `[cite:@key]` を文中に挿入することができるようになります。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/3.gif?raw=true) 余談ですが、文献を選択するときにTAB、挿入するときにTABで、TABキーを2回押します。私はここでEnterを押し続け、参照を挿入することができなくて悩みました。
 
 最後に、論文の末尾で
 
     #+print_bibliography:
 
-と書くと、参考文献リストが自動で出力されます。
+と書くと、参考文献リストが自動で出力されます。すごい
 
-参照や参考文献も `org` ファイル全体は[BROKEN LINK: org-modeで論文を書くメリット]をご覧ください。
+参照や参考文献も含めた `org` ファイル全体は、[記事冒頭](https://zenn.dev/gomadoufu/articles/how-to-write-papers-with-org-2025#org-mode%E3%81%A7%E8%AB%96%E6%96%87%E3%82%92%E6%9B%B8%E3%81%8F%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88)をご覧ください。
 
 
 ## おわりに
 
-なんか記事がめちゃくちゃ長くなっちゃいました！！！！！ Emacsで良い論文執筆ライフを！[^9]
+なんか記事がめちゃくちゃ長くなっちゃいました！！！！！ なにか参考になったら嬉しいです。
+
+Emacsで良い論文執筆ライフを！[^9]
 
 
 ## 参考
+
+以下の記事が大変参考になります
+
+-   <https://qiita.com/diadochos/items/acf876adf16abc6d97e0>
+-   <https://taipapamotohus.com/post/org-mode_paper_1/>
+-   <https://taipapamotohus.com/post/org-mode_paper_3/>
+
+org → latexに変換する際の、文書クラスの設定などがまとまっています
+
+<https://kumaroot.readthedocs.io/ja/latest/emacs/emacs-org-latex.html>
+
+内容と関係ないですが、gif画像の作り方はこれが一番良かったです
+
+<https://qiita.com/mikene_koko/items/b132f1e9afef82d589b3>
 
 
 [^1]: 著者が行ったアンケートの結果による.(n=1)
@@ -524,6 +530,6 @@ bibファイル名および使用する文献管理ツールは、適宜調整�
 [^4]: <https://orgmode.org/manual/Export-Settings.html>
 [^5]: orgファイルの中にLaTeXがそのまま書けることは大きなメリットです。普段は簡便な記法を使いつつも、不測の事態に遭遇したらLaTeXにフォールバックして、インターネットにある解決策を適用できます。
 [^6]: <https://www.gnu.org/software/auctex/reftex.html>
-[^7]: abc
-[^8]: abc
+[^7]: <https://orgmode.org/manual/Citations.html>
+[^8]: <https://github.com/emacs-citar/citar>
 [^9]: 論文執筆には、Emacsの他に、健康が必要です。寒いので体調にお気をつけて〜
