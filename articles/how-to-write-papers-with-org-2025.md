@@ -8,21 +8,21 @@ published: false
 
 冬、それは論文の季節。
 
-ここでは、Emacsのorg-modeで論文執筆の環境を作ります。この至高のエディタ[^1]で、研究室のメンバーに差をつけましょう。
+Emacsのorg-modeを使って、快適な論文執筆環境を作ります。
 
 
 ## できるようになること
 
-1.  テキストからLaTeXへの変換: 論文における本文・表・図や引用を、Markdownに近い書き方で記述できるようになる
-2.  PDFプレビュー: `latexmk` を用いて、ファイルを保存するたびにPDFを出力できるようになる
-3.  文献の参照: 本文中で文献を参照すると、参考文献として記載される。また、文献を対話的に選択できるようになる
+1.  テキストからLaTeXへの変換 : 論文における本文・表・図や引用を、Markdownに近い書き方で記述できるようになる
+2.  PDFプレビュー : `latexmk` を用いて、ファイルを保存するたびにPDFを出力できるようになる
+3.  文献の参照 : 本文中で文献を参照すると、参考文献として記載される。また、文献を対話的に選択できるようになる
 
 ざっくりいうと、 ****自前のエディタで、プレーンテキストで論文を書きつつ、Overleafに近いワークフローが実現できます。****
 
 
 ## org-modeで論文を書くメリット
 
-org-modeとはEmacsモードの一つで、アウトライナー機能やタスク管理機能の集合体です。モードというのはVSCodeでいう拡張機能のようなもので、ファイルに設定を記述することで利用します。org-modeには構造化ドキュメントを作成するための独自のマークアップ言語と、その言語で記述された文書をエクスポートする機能が含まれており、今回はこれを利用します[^2]。
+org-modeとはEmacsモードの一つで、アウトライナー機能やタスク管理機能の集合体です。モードというのはVSCodeでいう拡張機能のようなもので、ファイルに設定を記述することで利用します。org-modeには構造化ドキュメントを作成するための独自のマークアップ言語と、その言語で記述された文書をエクスポートする機能が含まれており、今回はこれを利用します[^1]。
 
 org-modeで論文を書く一番のメリットは、本文に集中できるようになることです。LaTeXマクロの仔細に惑わされる事なく、執筆そのものに重点を置くことができます。
 
@@ -106,13 +106,14 @@ org-modeで論文を書く一番のメリットは、本文に集中できるよ
     
     #+print_bibliography:
 
-以下のPDFが出力されます[^3]。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/1.png?raw=true)
+以下のPDFが出力されます[^2]。 ![](https://github.com/gomadoufu/zenn-content/blob/main/how-to-write-papers-with-org-2025/1.png?raw=true)
 
 
 ## 必要なもの
 
--   Emacs
--   Tex Live
+-   Emacs 29+
+-   org-mode 9.5+
+-   Tex Live 2020以降
 
 
 ## OrgファイルをLaTeXファイルに変換する
@@ -127,7 +128,7 @@ org-modeで論文を書く一番のメリットは、本文に集中できるよ
 Emacsの設定ファイル `init.el` に以下を書きます。
 
 ```emacs-lisp
-(use-package org-mode)
+(use-package org)
   
   ;;; LaTeX Export設定
 (use-package ox-latex
@@ -332,7 +333,7 @@ $preview_mode = 0;
 
 ## Orgファイルの書き方
 
-`org` ファイルで論文を執筆し、原稿をプレビューすることができるようになりました。ここでOrgファイルでの論文の書き方を説明します。なお、必要最低限かつざっくり説明なので、他にも色々機能はあるはずです
+`org` ファイルで論文を執筆し、原稿をプレビューすることができるようになりました。ここで、Orgファイルでの論文の書き方を説明します。なお、必要最低限ざっくり説明なので、他にも色々機能はあるはずです
 
 
 ### コンパイラ・文書クラス
@@ -341,7 +342,7 @@ $preview_mode = 0;
     #+LATEX_CLASS: ltjsarticle
     #+LATEX_CLASS_OPTIONS: [twocolumn]
 
-コンパイラ、文書クラスなど、最低限の設定には専用のディレクティブがあります。これについては、TeXの変換結果をみてもらった方が理解が早いですね
+コンパイラ、文書クラスなど、最低限の設定には専用のディレクティブがあります。これについては、LaTeXへの変換結果をみてもらった方が理解が早いですね
 
 ```tex
 % Created 2025-12-04 Thu 22:07
@@ -349,7 +350,7 @@ $preview_mode = 0;
 \documentclass[twocolumn]{ltjsarticle}
 ```
 
-たとえば学会のテンプレートを使っていて、論文誌と研究報告を切り替えるトグルがある場合は、この角かっこの中に記述すればいいわけです。
+たとえば学会のテンプレートを使っていて、論文誌と研究報告とを切り替えるトグルがある場合は、この角かっこの中に記述すればいいわけです。
 
 
 ### パッケージ
@@ -366,19 +367,19 @@ $preview_mode = 0;
 
 ### タイトル・著者情報など
 
-専用のディレクティブがいくつかあります[^4]。
+専用のディレクティブがいくつかあります[^3]。
 
     #+TITLE: Emacsのorg-modeで論文を書こう2025
     #+AUTHOR: gomadoufu, 唯野教授
     #+DATE: \today
     #+OPTIONS: toc:nil
 
-学会に出す場合は、タイトルや著者情報には専用のコマンドが用意されていることも多いです。そのような時は上記 `OPTIONS` でタイトル・著者情報を `nil` にした上で、org-mode内の `latex` ソースブロックで直接LaTeXを書いて対応します。
+学会指定のクラスファイルで、タイトルや著者情報には専用のコマンドが用意されていることも多いです。そのような時は上記 `OPTIONS` でタイトル・著者情報を `nil` にした上で、org-mode内の `latex` ソースブロックで直接LaTeXを書くことで対応します。
 
-例えば情報処理学会の公式テンプレートを使用する場合、 `\usepackage` を除いたファイル冒頭は以下の通りです。 `#+begin_export latex` と `#+end_export` で囲まれた箇所が、LaTeXでそのまま出力される[^5]ので、タイトルや著者情報が必ず所定の形式で出力されるようになります。
+例えば情報処理学会の公式テンプレートを使用する場合、 `\usepackage` 以下のファイル冒頭は次のようになります。 `#+begin_export latex` と `#+end_export` で囲まれた箇所が、LaTeXでそのまま出力される[^4]ので、タイトルや著者情報が必ず所定の形式で出力されるようになります。
 
     
-    LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{graphicx}
+    #+LATEX_HEADER_EXTRA: \usepackage[dvipdfmx]{graphicx}
     ...(略)
     
     #+begin_export latex
@@ -409,7 +410,7 @@ $preview_mode = 0;
 
 ### 図表の参照
 
-図表の参照にはRefTeX[^6]を利用します。文中でorg-modeのリンク記法を使って、図表との相互参照を作ることができます。
+図表の参照にはRefTeX[^5]を利用します。文中でorg-modeのリンク記法を使って、図表との相互参照を作ることができます。
 
 `init.el` に、以下のように設定します
 
@@ -462,7 +463,7 @@ $preview_mode = 0;
 
 ### 参考文献の参照
 
-org-modeにはデフォルトでorg-cite[^7]という機能があり、文中に `[cite:@key]` と書くことでLaTeXでいうところの `\cite` 形式の参照が利用できるほか、 `bib` ファイルからの文献の検索と挿入が可能になります。これにフロントエンドとしてcitar[^8]パッケージを組み合わせることで、リアルタイムな絞り込み検索ができます。快適。
+org-modeにデフォルトである、org-cite[^6]という機能を利用します。文中に `[cite:@key]` と書くことでLaTeXでいうところの `\cite` 形式の参照が利用できるようになるほか、 `bib` ファイルからの文献の検索と挿入が利用できるようになります。これにフロントエンドとしてcitar[^7]パッケージを組み合わせることで、モダンな絞り込み検索を可能にします
 
 ```emacs-lisp
 ;;; org-cite設定
@@ -495,16 +496,14 @@ bibファイル名および使用する文献管理ツールは、適宜調整�
 
     #+print_bibliography:
 
-と書くと、参考文献リストが自動で出力されます。すごい
-
-参照や参考文献も含めた `org` ファイル全体は、[記事冒頭](https://zenn.dev/gomadoufu/articles/how-to-write-papers-with-org-2025#org-mode%E3%81%A7%E8%AB%96%E6%96%87%E3%82%92%E6%9B%B8%E3%81%8F%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88)をご覧ください。
+と書くと、参考文献リストが自動で出力されます。すごい。
 
 
 ## おわりに
 
 なんか記事がめちゃくちゃ長くなっちゃいました！！！！！ なにか参考になったら嬉しいです。
 
-Emacsで良い論文執筆ライフを！[^9]
+Emacsで良い論文執筆ライフを！[^8]
 
 
 ## 参考
@@ -524,12 +523,11 @@ org → latexに変換する際の、文書クラスの設定などがまとま�
 <https://qiita.com/mikene_koko/items/b132f1e9afef82d589b3>
 
 
-[^1]: 著者が行ったアンケートの結果による.(n=1)
-[^2]: <https://takaxp.github.io/org-ja.html#Top>
-[^3]: orgファイルからtexファイルへの変換はorg-modeによるものですが、組版のステップはTex環境およびlatexmkによるものです。よってこのステップに限れば、Emacsでなくとも実現できます。
-[^4]: <https://orgmode.org/manual/Export-Settings.html>
-[^5]: orgファイルの中にLaTeXがそのまま書けることは大きなメリットです。普段は簡便な記法を使いつつも、不測の事態に遭遇したらLaTeXにフォールバックして、インターネットにある解決策を適用できます。
-[^6]: <https://www.gnu.org/software/auctex/reftex.html>
-[^7]: <https://orgmode.org/manual/Citations.html>
-[^8]: <https://github.com/emacs-citar/citar>
-[^9]: 論文執筆には、Emacsの他に、健康が必要です。寒いので体調にお気をつけて〜
+[^1]: <https://takaxp.github.io/org-ja.html#Top>
+[^2]: orgファイルからtexファイルへの変換はorg-modeによるものですが、組版のステップはTex環境およびlatexmkによるものです。
+[^3]: <https://orgmode.org/manual/Export-Settings.html>
+[^4]: orgファイルの中にLaTeXがそのまま書けることは大きなメリットです。普段は簡便な記法を使いつつも、不測の事態に遭遇したらLaTeXにフォールバックして、インターネットにある解決策を適用できます。
+[^5]: <https://www.gnu.org/software/auctex/reftex.html>
+[^6]: <https://orgmode.org/manual/Citations.html>
+[^7]: <https://github.com/emacs-citar/citar>
+[^8]: 論文執筆には、Emacsの他に、健康が必要です。寒いので体調にお気をつけて〜
